@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const postsController = require('../controllers/posts.controller');
 
-// GET /api/v1/posts/
-router.get('/', (req, res) => {
-  res.send('Fetching all blog posts from the modular router!');
-});
+// Routes: router should have no inline logic, only controller refs
+router.get('/', postsController.getAllPosts);
+router.get('/:id', postsController.getPostById);
+router.post('/', postsController.createPost);
 
 module.exports = router;

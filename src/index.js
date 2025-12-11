@@ -1,19 +1,21 @@
 const express = require('express');
+const cors = require('cors');
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Import the router only once
-const postRouter = require('./routes/posts.routes.js');
+// Global middleware
+app.use(cors());
+app.use(express.json());
 
-// Default route
-app.get('/', (req, res) => {
-  res.send('Welcome to the Blogify API!');
-});
+// Mount master router (only one app.use for routes)
+const mainRouter = require('./routes');
+app.use('/api/v1', mainRouter);
 
-// Mount the router
-app.use('/api/v1/posts', postRouter);
+// Centralized error handler (must be after routes)
+const { errorHandler } = require('./middleware/error.handler');
+app.use(errorHandler);
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}/`);
+  console.log(`Blogify API running on http://localhost:${PORT}`);
 });
